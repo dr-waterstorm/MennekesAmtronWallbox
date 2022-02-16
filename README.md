@@ -4,14 +4,14 @@ Tested on my MENNEKES AMTRON Xtra wallbox.
 
 Should work for AMTRON Premium devices as well.
 
+Implements registers from the [MENNEKES ATROM MODBUS-TCP description](https://update.mennekes.de/hcc3/1.13/Description%20Modbus_AMTRON%20HCC3_v01_2021-06-25_en.pdf).
+
 ## Setup
 
 Clone git and call:
 ```bash
 pip install .
 ```
-
-TODO: Publish to pip
 
 ## Usage
 ```python
@@ -34,7 +34,7 @@ amtron.print_all_data()
     'no_of_phases': 3,
     'rated_current': 32,
     'installation_current': 16,
-    'get_serial_number': 0000000000,
+    'serial_number': 0000000000,
     'charging_session_meter_count': 11779,
     'actual_power_consumption': 0,
     'wallbox_name': 'AMTRON',

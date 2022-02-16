@@ -8,7 +8,6 @@ from pymodbus.payload import BinaryPayloadDecoder
 
 class Client(object):
     def __init__(self, modbus_host, modbus_port):
-
         self.modbus_host = modbus_host
         self.modbus_port = modbus_port
         self.modbus_client = ModbusTcpClient(self.modbus_host, self.modbus_port)
@@ -36,7 +35,7 @@ class Client(object):
             out["no_of_phases"] = self.get_amtron_no_of_phases()
             out["rated_current"] = self.get_amtron_rated_current()
             out["installation_current"] = self.get_amtron_installation_current()
-            out["get_serial_number"] = self.get_serial_number()
+            out["serial_number"] = self.get_serial_number()
             out["charging_session_meter_count"] = self.get_charging_session_meter_count()
             out["actual_power_consumption"] = self.get_actual_power_consumption()
             out["wallbox_name"] = self.get_amtron_wallbox_name()
