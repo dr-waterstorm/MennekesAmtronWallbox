@@ -141,7 +141,7 @@ class Client(object):
 
             # This solves the string swap bytes issue
             # https://stackoverflow.com/questions/62411062/python-modbus-string-decoding-issue
-            for i in range(register):
+            for i in range(len(rr.registers)):
                 rr.registers[i] = struct.unpack("<H", struct.pack(">H", rr.registers[i]))[0]
 
             if not rr.isError():
