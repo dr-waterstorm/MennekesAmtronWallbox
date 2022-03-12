@@ -47,62 +47,83 @@ class Client(object):
         except Exception as e:
             logging.error(f"An error occurred while polling all data: {e}")
 
+    # Coil Registers
+    def reboot_wallbox(self):
+        return self.set_bool_coil(0x0108, "reboot", True)
+
+    # Discrete Input Registers
+
+
     # Input Registers
     def get_internal_temp(self):
-        return self.get_16bit_uint(0x0300, "internal temperature")
+        return self.get_16bit_uint_input(0x0300, "internal temperature")
 
     def get_external_temp(self):
-        return self.get_16bit_uint(0x0301, "external temperature")
+        return self.get_16bit_uint_input(0x0301, "external temperature")
 
     def get_cp_state(self):
-        return self.get_16bit_uint(0x0302, "CP state")
+        return self.get_16bit_uint_input(0x0302, "CP state")
 
     def get_pp_state(self):
-        return self.get_16bit_uint(0x0303, "PP state")
+        return self.get_16bit_uint_input(0x0303, "PP state")
 
     def get_hcc3_error_code(self):
-        return self.get_16bit_uint(0x0304, "HCC3 Error Code")
+        return self.get_16bit_uint_input(0x0304, "HCC3 Error Code")
 
     def get_amtron_state(self):
-        return self.get_16bit_uint(0x0305, "AMTRON State")
+        return self.get_16bit_uint_input(0x0305, "AMTRON State")
 
     def get_amtron_operation_mode(self):
-        return self.get_16bit_uint(0x0306, "AMTRON Operation Mode")
+        return self.get_16bit_uint_input(0x0306, "AMTRON Operation Mode")
 
     def get_connector_type(self):
-        return self.get_16bit_uint(0x0307, "Connector Type")
+        return self.get_16bit_uint_input(0x0307, "Connector Type")
 
     def get_amtron_no_of_phases(self):
-        return self.get_16bit_uint(0x0308, "AMTRON No. of Phases")
+        return self.get_16bit_uint_input(0x0308, "AMTRON No. of Phases")
 
     def get_amtron_rated_current(self):
-        return self.get_16bit_uint(0x0309, "AMTRON Rated Current")
+        return self.get_16bit_uint_input(0x0309, "AMTRON Rated Current")
 
     def get_amtron_installation_current(self):
-        return self.get_16bit_uint(0x030A, "AMTRON Installation Current")
+        return self.get_16bit_uint_input(0x030A, "AMTRON Installation Current")
 
     def get_serial_number(self):
-        return self.get_32bit_uint(0x030B, "Serial number")
+        return self.get_32bit_uint_input(0x030B, "Serial number")
 
     def get_charging_session_meter_count(self):
-        return self.get_32bit_uint(0x030D, "Charging session meter count")
+        return self.get_32bit_uint_input(0x030D, "Charging session meter count")
 
     def get_actual_power_consumption(self):
-        return self.get_32bit_uint(0x030F, "Actual power consumption")
+        return self.get_32bit_uint_input(0x030F, "Actual power consumption")
 
     def get_amtron_wallbox_name(self):
-        return self.get_string(0x0311, 11, 22, "Wallbox Name")
+        return self.get_string_input(0x0311, 11, 22, "Wallbox Name")
 
     def get_max_current_t1(self):
-        return self.get_16bit_uint(0x031D, "Max Current T1")
+        return self.get_16bit_uint_input(0x031D, "Max Current T1")
 
     def get_start_hour_t1(self):
-        return self.get_16bit_uint(0x031E, "Start hour T1")
+        return self.get_16bit_uint_input(0x031E, "Start hour T1")
 
     def get_start_minute_t1(self):
-        return self.get_16bit_uint(0x031F, "Start minute T1")
+        return self.get_16bit_uint_input(0x031F, "Start minute T1")
 
-    def get_16bit_uint(self, register, name):
+    # coil registers
+    def set_bool_coil(self, register, name, value):
+        try:
+            self.connect()
+            rr = self.modbus_client.write_coil(register, value, unit=255)
+
+            if not rr.isError():
+                return True
+
+        except Exception as e:
+            logging.warning(f"An error occurred while trying writing boolean {name}: {e}")
+
+
+    # input registers
+    def get_16bit_uint_input(self, register, name):
         try:
             self.connect()
             rr = self.modbus_client.read_input_registers(register, 1, unit=255)
@@ -118,7 +139,7 @@ class Client(object):
         except Exception as e:
             logging.warning(f"An error occurred while polling {name}: {e}")
 
-    def get_32bit_uint(self, register, name):
+    def get_32bit_uint_input(self, register, name):
         try:
             self.connect()
             rr = self.modbus_client.read_input_registers(register, 2, unit=255)
@@ -134,7 +155,7 @@ class Client(object):
         except Exception as e:
             logging.warning(f"An error occurred while polling {name}: {e}")
 
-    def get_string(self, register, length, chars, name):
+    def get_string_input(self, register, length, chars, name):
         try:
             self.connect()
             rr = self.modbus_client.read_input_registers(register, length, unit=255)
